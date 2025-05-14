@@ -16,7 +16,7 @@ export function useScannerAnimation() {
 
   const translateY = animatedValue.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 150],
+    outputRange: [0, 80],
   });
 
   return translateY;

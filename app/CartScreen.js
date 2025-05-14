@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Animated } from "react-native";
+import { View, Text, Animated, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 // Componentes y hooks personalizados
 import BarcodeScanner from "../components/BarcodeScanner";
 import CartList from "../components/CartList";
+import { Screen } from "../components/Screem";
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";
@@ -15,7 +17,7 @@ import {
   clearCart,
   addToCart,
 } from "../utils/cartUtils";
-import styles from "../styles/styles";
+import { styledScanner, styledCart } from "../styles/styles";
 
 export default function CartScreen() {
   // Evita múltiples escaneos
@@ -38,7 +40,7 @@ export default function CartScreen() {
   // Si no se ha autorizado la cámara, muestra un mensaje
   if (hasPermission !== true) {
     return (
-      <View style={styles.center}>
+      <View style={styledScanner.center}>
         <Text>
           {hasPermission === null
             ? "Solicitando permiso de cámara..."
@@ -47,36 +49,39 @@ export default function CartScreen() {
       </View>
     );
   }
- // Calcula el total a pagar
+  // Calcula el total a pagar
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Escáner de Códigos de Barras</Text>
-      <View style={styles.scanner}>
+    <Screen style={styledScanner.container}>
+      <View style={styledScanner.scanner}>
         <BarcodeScanner onScanned={handleBarcodeScanned} scanned={scanned} />
         <Animated.View
-          style={[styles.scannerLine, { transform: [{ translateY }] }]}
+          style={[styledScanner.scannerLine, { transform: [{ translateY }] }]}
         />
       </View>
 
-      <View style={styles.cartContainer}>
+      <View style={styledScanner.container}>
         {cart.length > 0 && (
           <>
-            <Text style={styles.totalText}>Total: L.{total.toFixed(2)}</Text>
-            <Text onPress={() => clearCart(setCart)} style={styles.clearButton}>
-              Vaciar Carrito 🗑️
+            <Text style={styledCart.totalText}>
+              Total: L.{total.toFixed(2)}
             </Text>
+            <TouchableOpacity
+              onPress={() => clearCart(setCart)}
+              style={styledCart.clearButton}
+            >
+              <MaterialIcons name="delete" size={30} color="white" />
+            </TouchableOpacity>
           </>
         )}
 
-        <Text style={styles.title}>Carrito:</Text>
         <CartList
           cart={cart}
           increaseQuantity={(code) => increaseQuantity(code, setCart)}
           decreaseQuantity={(code) => decreaseQuantity(code, setCart)}
         />
       </View>
-    </View>
+    </Screen>
   );
 }

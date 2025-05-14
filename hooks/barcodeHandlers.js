@@ -15,8 +15,6 @@ export const useBarcodeHandler = ({
     async ({ type, data }) => {
       setScanned(true);
       setCode(data);
-      console.log("Código detectado:", type, data);
-
       try {
         await playScanSound(); // Reproducir el sonido al escanear
         const existingProduct = await getProductByBarcode(data); // Buscar en DB

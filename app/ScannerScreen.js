@@ -7,12 +7,13 @@ import {
   Platform,
 } from "react-native";
 import { useRouter } from "expo-router"; // Hook de navegación
-import styles from "../styles/styles";
+import { styledScanner } from "../styles/styles";
 import Toast from "react-native-toast-message";
 
 import BarcodeScanner from "../components/BarcodeScanner"; // Componente para el escáner de códigos
 import ScannedForm from "../components/ScannedForm"; // Componente para el formulario de escaneo
 import CustomButton from "../components/Button"; // Componente de botón personalizado
+import { Screen } from "../components/Screem"; // Componente de pantalla
 
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
@@ -121,7 +122,7 @@ export default function ScannerScreen() {
   // Mientras se carga el permiso
   if (!hasPermission) {
     return (
-      <View style={styles.center}>
+      <View style={styledScanner.center}>
         <Text>
           {hasPermission === null
             ? "Solicitando permiso de cámara..."
@@ -132,72 +133,78 @@ export default function ScannerScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
-    >
-      <View style={styles.container}>
-        <View style={styles.scanner}>
-          <BarcodeScanner scanned={scanned} onScanned={handleBarcodeScanned} />
-          <Animated.View
-            style={[styles.scannerLine, { transform: [{ translateY }] }]}
-          />
-        </View>
-
-        {scanned && (
-          <Text style={{ textAlign: "center", margin: 10, fontWeight: "bold" }}>
-            Código escaneado
-          </Text>
-        )}
-
-        <ScannedForm
-          code={code}
-          setCode={setCode}
-          name={name}
-          setName={setName}
-          price={price}
-          setPrice={setPrice}
-        />
-
-        {!keyboardVisible && (
-          <View style={styles.buttonGroup}>
-            {scanned && (
-              <>
-                <CustomButton
-                  title="Guardar producto"
-                  icon="save"
-                  onPress={handleSaveProduct}
-                  color="#4CAF50"
-                />
-                <CustomButton
-                  title="Actualizar producto"
-                  icon="edit"
-                  onPress={handleUpdateProduct}
-                  color="#2196F3"
-                />
-                <CustomButton
-                  title="Eliminar producto"
-                  icon="delete"
-                  onPress={() => confirmDelete(handleDeleteProduct)}
-                  color="#F44336"
-                />
-                <CustomButton
-                  title="Escanear de nuevo"
-                  icon="camera-alt"
-                  onPress={resetForm}
-                  color="#FF9800"
-                />
-              </>
-            )}
-            <CustomButton
-              title="Volver al inicio"
-              icon="arrow-back"
-              onPress={() => router.back()}
-              color="#9E9E9E"
+    <Screen>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1, width: "100%" }}
+      >
+        <View style={styledScanner.container}>
+          <View style={styledScanner.scanner}>
+            <BarcodeScanner
+              scanned={scanned}
+              onScanned={handleBarcodeScanned}
+            />
+            <Animated.View
+              style={[
+                styledScanner.scannerLine,
+                { transform: [{ translateY }] },
+              ]}
             />
           </View>
-        )}
-      </View>
-    </KeyboardAvoidingView>
+
+          {scanned && (
+            <Text style={styledScanner.center}>Código escaneado</Text>
+          )}
+
+          <ScannedForm
+            code={code}
+            setCode={setCode}
+            name={name}
+            setName={setName}
+            price={price}
+            setPrice={setPrice}
+          />
+
+          {!keyboardVisible && (
+            <View style={styledScanner.buttonGroup}>
+              {(scanned || code.length > 0) && (
+                <>
+                  <CustomButton
+                    title="Guardar producto"
+                    icon="save"
+                    onPress={handleSaveProduct}
+                    color="#4CAF50"
+                  />
+                  <CustomButton
+                    title="Actualizar producto"
+                    icon="edit"
+                    onPress={handleUpdateProduct}
+                    color="#2196F3"
+                  />
+                  <CustomButton
+                    title="Eliminar producto"
+                    icon="delete"
+                    onPress={() => confirmDelete(handleDeleteProduct)}
+                    color="#F44336"
+                  />
+                  <CustomButton
+                    title="Escanear de nuevo"
+                    icon="camera-alt"
+                    onPress={resetForm}
+                    color="#FF9800"
+                  />
+                </>
+              )}
+              <CustomButton
+                title="Volver al inicio"
+                icon="arrow-back"
+                onPress={() => router.back()}
+                color="#9E9E9E"
+              />
+            </View>
+          )}
+        </View>
+      </KeyboardAvoidingView>
+    </Screen>
   );
 }

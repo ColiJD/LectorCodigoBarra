@@ -8,19 +8,35 @@ export const increaseQuantity = (code, setCart) => {
     )
   );
 };
-
 export const decreaseQuantity = (code, setCart) => {
-  setCart((prevCart) =>
-    prevCart
-      .map((item) =>
-        item.code === code
-          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-          : item
-      )
-      .filter((item) => item.quantity > 0)
-  );
-};
+  setCart((prevCart) => {
+    let itemRemoved = null;
 
+    const updatedCart = prevCart.map((item) => {
+      if (item.code === code) {
+        const newQuantity = item.quantity - 1;
+        if (newQuantity <= 0) {
+          itemRemoved = item; // Guardar para mostrar en el Toast
+        }
+        return { ...item, quantity: newQuantity };
+      }
+      return item;
+    });
+
+    const finalCart = updatedCart.filter((item) => item.quantity > 0);
+
+    if (itemRemoved) {
+      Toast.show({
+        type: "info",
+        text1: "Producto eliminado",
+        text2: `Se eliminó ${itemRemoved.code} del carrito.`,
+        position: "bottom",
+      });
+    }
+
+    return finalCart;
+  });
+};
 export const clearCart = (setCart) => {
   setCart([]);
   Toast.show({

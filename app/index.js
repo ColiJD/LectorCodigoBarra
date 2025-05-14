@@ -1,24 +1,28 @@
-// Página principal del app, muestra un botón para ir al escáner
-import { View, Text, Button } from "react-native";
-import { useRouter } from "expo-router"; // Hook para navegación
-import styles from "../styles/styles";
+// HomeScreen.js
+import { View } from "react-native";
+import { useRouter } from "expo-router";
+import { Screen } from "../components/Screem";
+import CustomButton from "../components/Button";
+import { styledprincipal } from "../styles/styles";
 
 export default function HomeScreen() {
-  const router = useRouter(); // Accede a funciones de navegación
+  const router = useRouter();
 
   return (
-    <View style={styles.center}>
-      <Text style={styles.title}>Lector de Códigos</Text>
-      {/* Navega a la pantalla del escáner */}
-      <Button
-        title="Iniciar escáner"
-        onPress={() => router.push("/ScannerScreen")}
-      />
-      <Button
-        title="Carrito"
-        onPress={() => router.push("/CartScreen")}
-        style={{ margin: 10 }}
-      />
-    </View>
+    <Screen>
+      <View style={styledprincipal.container}>
+        <CustomButton
+          title="Escanear Producto"
+          icon="qr-code-scanner"
+          onPress={() => router.push("/ScannerScreen")}
+        />
+        <CustomButton
+          title="Realizar Venta"
+          icon="shopping-cart"
+          color="#28a745"
+          onPress={() => router.push("/CartScreen")}
+        />
+      </View>
+    </Screen>
   );
 }

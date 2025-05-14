@@ -1,10 +1,10 @@
 // HomeScreen.js
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { useRouter } from "expo-router";
 import { Screen } from "../components/Screem";
 import CustomButton from "../components/Button";
 import { styledprincipal } from "../styles/styles";
-
+import { MaterialIcons } from "@expo/vector-icons";
 export default function HomeScreen() {
   const router = useRouter();
 
@@ -22,6 +22,11 @@ export default function HomeScreen() {
           color="#28a745"
           onPress={() => router.push("/CartScreen")}
         />
+      </View>
+      <View style={styledprincipal.containerLogo}>
+        <View style={styledprincipal.containerBox}>
+          <MaterialIcons name="qr-code-scanner" size={150} color="white" />
+        </View>
       </View>
     </Screen>
   );

@@ -4,10 +4,33 @@ import colors from "./colors";
 
 export const styledprincipal = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     marginTop: 20,
     width: "80%",
+  },
+  containerLogo: {
+    width: "80%",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.blueDark,
+  },
+  containerBox: {
+    borderColor: colors.white,
+    borderWidth: 1,
+    width: 250,
+    height: 250,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100, // mitad del ancho y alto
+    backgroundColor: colors.black, // opcional, para que se vea mejor
+    borderWidth: 5,
+  },
+  texto: {
+    fontSize: 100,
+    color: colors.white,
+    fontWeight: "bold",
+    fontStyle: "italic",
   },
 });
 
@@ -98,15 +121,11 @@ export const styledCart = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     backgroundColor: colors.white,
-   
-    
   },
   clearButton: {
     position: "absolute",
     bottom: 10,
-    left: 30
-
-
+    left: 30,
   },
   cartItem: {
     margin: 5,
@@ -121,7 +140,6 @@ export const styledCart = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-
   },
   Text: {
     fontSize: 16,

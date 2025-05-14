@@ -1,36 +1,36 @@
 // app.config.js
-import 'dotenv/config';
+import "dotenv/config";
 
 export default {
   expo: {
-    name: 'lector-codigos',
-    slug: 'lector-codigos',
-    scheme: 'lectorcodigos',
-    version: '1.0.0',
-    orientation: 'portrait',
-    icon: './assets/icon.png',
-    userInterfaceStyle: 'light',
+    name: "lector-codigos",
+    slug: "lector-codigos",
+    scheme: "lectorcodigos",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/icon.png",
+    userInterfaceStyle: "light",
     splash: {
-      image: './assets/splash-icon.png',
-      resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      image: "./assets/splash-icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
     },
     ios: {
       supportsTablet: true,
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#ffffff",
       },
       edgeToEdgeEnabled: true,
-      permissions: ['android.permission.CAMERA'],
-      package: 'com.colijd.lectorcodigos',
+      permissions: ["android.permission.CAMERA"],
+      package: "com.colijd.lectorcodigos",
     },
     web: {
-      favicon: './assets/favicon.png',
+      favicon: "./assets/favicon.png",
     },
-    plugins: ['expo-router'],
+    plugins: ["expo-router"],
     extra: {
       FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
@@ -39,6 +39,9 @@ export default {
       FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
       FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
       FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
+      eas: {
+        projectId: "5f663ca8-e9f0-49ce-9607-272b76f3881b",
+      },
     },
   },
 };

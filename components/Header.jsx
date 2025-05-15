@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -34,7 +35,7 @@ const HeaderWithRightPanel = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <View style={StyledHeader.header}>
         <Text style={StyledHeader.titles}>{getTitle()}</Text>
         <TouchableOpacity onPress={() => setVisible(true)}>
@@ -48,25 +49,34 @@ const HeaderWithRightPanel = () => {
         visible={visible}
         onRequestClose={() => setVisible(false)}
       >
-        <Pressable style={StyledHeader.overlay} onPress={() => setVisible(false)} />
+        <Pressable
+          style={StyledHeader.overlay}
+          onPress={() => setVisible(false)}
+        />
         <View style={StyledHeader.panel}>
           <Pressable style={StyledHeader.link} onPress={() => navigateTo("/")}>
             <MaterialIcons name="home" size={24} color="#FFF" />
             <Text style={StyledHeader.linkText}>Inicio</Text>
           </Pressable>
 
-          <Pressable style={StyledHeader.link} onPress={() => navigateTo("/ScannerScreen")}>
+          <Pressable
+            style={StyledHeader.link}
+            onPress={() => navigateTo("/ScannerScreen")}
+          >
             <MaterialIcons name="qr-code-scanner" size={24} color="#FFF" />
             <Text style={StyledHeader.linkText}>Escanear Producto</Text>
           </Pressable>
 
-          <Pressable style={StyledHeader.link} onPress={() => navigateTo("/CartScreen")}>
+          <Pressable
+            style={StyledHeader.link}
+            onPress={() => navigateTo("/CartScreen")}
+          >
             <MaterialIcons name="point-of-sale" size={24} color="#FFF" />
             <Text style={StyledHeader.linkText}>Realizar Venta</Text>
           </Pressable>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 

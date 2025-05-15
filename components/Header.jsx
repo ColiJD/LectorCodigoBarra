@@ -6,6 +6,8 @@ import {
   Modal,
   Pressable,
   SafeAreaView,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -35,7 +37,7 @@ const HeaderWithRightPanel = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={StyledHeader.safeArea}>
       <View style={StyledHeader.header}>
         <Text style={StyledHeader.titles}>{getTitle()}</Text>
         <TouchableOpacity onPress={() => setVisible(true)}>

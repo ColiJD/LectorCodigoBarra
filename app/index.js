@@ -1,7 +1,7 @@
 // HomeScreen.js
 import { View, Text } from "react-native";
 import { useRouter } from "expo-router";
-import { Screen } from "../components/Screem";
+import { Screen } from "../components/Screen";
 import CustomButton from "../components/Button";
 import { styledprincipal } from "../styles/styles";
 import { MaterialIcons } from "@expo/vector-icons";

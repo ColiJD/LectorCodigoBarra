@@ -13,7 +13,7 @@ import Toast from "react-native-toast-message";
 import BarcodeScanner from "../components/BarcodeScanner"; // Componente para el escáner de códigos
 import ScannedForm from "../components/ScannedForm"; // Componente para el formulario de escaneo
 import CustomButton from "../components/Button"; // Componente de botón personalizado
-import { Screen } from "../components/Screem"; // Componente de pantalla
+import { Screen } from "../components/Screen"; // Comp../components/Screen
 
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";

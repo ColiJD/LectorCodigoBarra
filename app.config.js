@@ -27,6 +27,11 @@ export default {
       permissions: ["android.permission.CAMERA"],
       package: "com.colijd.lectorcodigos",
     },
+    androidStatusBar: {
+      barStyle: "light-content",
+      backgroundColor: "#001F3F",
+    },
+
     web: {
       favicon: "./assets/favicon.png",
     },

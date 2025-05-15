@@ -15,7 +15,7 @@ import uuid from "react-native-uuid"; // Asegúrate de instalar esta librería
 // Componentes y hooks personalizados
 import BarcodeScanner from "../components/BarcodeScanner";
 import CartList from "../components/CartList";
-import { Screen } from "../components/Screem";
+import { Screen } from "../components/Screen";
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";

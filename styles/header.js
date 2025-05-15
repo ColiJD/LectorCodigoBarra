@@ -1,7 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform, StatusBar } from "react-native";
 import colors from "./colors";
 
 export const StyledHeader = StyleSheet.create({
+  safeArea: {
+    backgroundColor: colors.blueDark,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
   header: {
     padding: 16,
     alignItems: "center",
@@ -22,7 +26,7 @@ export const StyledHeader = StyleSheet.create({
   },
   panel: {
     position: "absolute",
-    top: 70,
+    top: 0, // cambio para que el panel quede pegado al top
     right: 0,
     width: 250,
     height: "100%",
@@ -37,8 +41,8 @@ export const StyledHeader = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: "transparent", // o un hover/color dinámico
-    gap: 6, // si tu versión de React Native lo soporta, reemplaza marginLeft
+    backgroundColor: "transparent",
+    gap: 6,
   },
 
   linkText: {

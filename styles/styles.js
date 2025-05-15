@@ -59,12 +59,12 @@ export const styledScanner = StyleSheet.create({
     position: "relative",
   },
   center: {
-    color: "#fff",
+    color: colors.white,
     alignSelf: "center",
     fontSize: 14,
     padding: 10,
     fontWeight: "bold",
-    borderBottomColor: "#fff",
+    borderBottomColor: colors.blueDark,
     borderBottomWidth: 1,
   },
   scanner: {

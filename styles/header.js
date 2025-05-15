@@ -4,9 +4,9 @@ import colors from "./colors";
 export const StyledHeader = StyleSheet.create({
   safeArea: {
     backgroundColor: colors.blueDark,
-    
   },
   header: {
+    marginTop: 36,
     padding: 16,
     alignItems: "center",
     flexDirection: "row",
@@ -15,7 +15,7 @@ export const StyledHeader = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: colors.white,
     height: 60, // <-- altura fija
-     paddingHorizontal: 16,
+    paddingHorizontal: 16,
   },
   titles: {
     color: colors.white,

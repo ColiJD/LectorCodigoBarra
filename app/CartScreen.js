@@ -17,7 +17,7 @@ import BarcodeScanner from "../components/BarcodeScanner";
 import CartList from "../components/CartList";
 import { Screen } from "../components/Screen";
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
-import { useCameraPermission } from "../hooks/useCameraPermission";
+// import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";
 
 // Funciones reutilizables para el manejo del carrito
@@ -37,7 +37,7 @@ export default function CartScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [customPrice, setCustomPrice] = useState("");
   const translateY = useScannerAnimation();
-  const hasPermission = useCameraPermission();
+  // const hasPermission = useCameraPermission();
   // NUEVO estado
   const [confirmClearModalVisible, setConfirmClearModalVisible] =
     useState(false);
@@ -67,23 +67,28 @@ export default function CartScreen() {
     }
   };
   // Si no se ha autorizado la cámara, muestra un mensaje
-  if (hasPermission !== true) {
-    return (
-      <View style={styledScanner.center}>
-        <Text>
-          {hasPermission === null
-            ? "Solicitando permiso de cámara..."
-            : "Acceso a cámara denegado."}
-        </Text>
-      </View>
-    );
-  }
+  // if (hasPermission !== true) {
+  //   return (
+  //     <View style={styledScanner.center}>
+  //       <Text>
+  //         {hasPermission === null
+  //           ? "Solicitando permiso de cámara..."
+  //           : "Acceso a cámara denegado."}
+  //       </Text>
+  //     </View>
+  //   );
+  // }
   // Calcula el total a pagar
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <Screen style={styledScanner.container}>
-      
+      <View style={[styledScanner.scanner, { position: "relative" }]}>
+        <BarcodeScanner onScanned={handleBarcodeScanned} scanned={scanned} />
+        <Animated.View
+          style={[styledScanner.scannerLine, { transform: [{ translateY }] }]}
+        />
+      </View>
 
       <View style={styledScanner.container}>
         {cart.length > 0 && (

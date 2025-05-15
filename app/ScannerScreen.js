@@ -16,7 +16,6 @@ import CustomButton from "../components/Button"; // Componente de botón persona
 import { Screen } from "../components/Screen"; // Comp../components/Screen
 
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
-import { useCameraPermission } from "../hooks/useCameraPermission";
 import {
   saveProduct,
   updateProduct,
@@ -34,7 +33,6 @@ export default function ScannerScreen() {
   const router = useRouter(); // Para volver a la pantalla anterior
 
   const translateY = useScannerAnimation(); // Hook para la animación del escáner
-  const hasPermission = useCameraPermission(); // Hook para el permiso de cámara
   const keyboardVisible = useKeyboardVisible(); // Hook para detectar si el teclado está visible
   const handleBarcodeScanned = useBarcodeHandler({
     setCode,
@@ -118,19 +116,6 @@ export default function ScannerScreen() {
     setName("");
     setPrice("");
   };
-
-  // Mientras se carga el permiso
-  if (!hasPermission) {
-    return (
-      <View style={styledScanner.center}>
-        <Text>
-          {hasPermission === null
-            ? "Solicitando permiso de cámara..."
-            : "Acceso a cámara denegado."}
-        </Text>
-      </View>
-    );
-  }
 
   return (
     <Screen>

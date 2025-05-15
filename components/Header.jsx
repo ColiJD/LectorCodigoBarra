@@ -37,7 +37,7 @@ const HeaderWithRightPanel = () => {
   };
 
   return (
-    <SafeAreaView style={StyledHeader.safeArea}>
+    <>
       <View style={StyledHeader.header}>
         <Text style={StyledHeader.titles}>{getTitle()}</Text>
         <TouchableOpacity onPress={() => setVisible(true)}>
@@ -78,7 +78,7 @@ const HeaderWithRightPanel = () => {
           </Pressable>
         </View>
       </Modal>
-    </SafeAreaView>
+    </>
   );
 };
 

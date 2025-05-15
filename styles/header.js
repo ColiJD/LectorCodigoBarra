@@ -4,7 +4,7 @@ import colors from "./colors";
 export const StyledHeader = StyleSheet.create({
   safeArea: {
     backgroundColor: colors.blueDark,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    
   },
   header: {
     padding: 16,
@@ -14,6 +14,8 @@ export const StyledHeader = StyleSheet.create({
     backgroundColor: colors.blueDark,
     borderBottomWidth: 2,
     borderBottomColor: colors.white,
+    height: 60, // <-- altura fija
+     paddingHorizontal: 16,
   },
   titles: {
     color: colors.white,

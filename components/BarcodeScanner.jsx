@@ -17,7 +17,7 @@ export default function BarcodeScanner({ onScanned, scanned }) {
           "upc_a",
         ],
       }}
-      style={StyleSheet.absoluteFillObject}
+      style={{ flex: 1 }} 
     />
   );
 }

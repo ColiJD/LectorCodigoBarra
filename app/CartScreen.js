@@ -83,12 +83,7 @@ export default function CartScreen() {
 
   return (
     <Screen style={styledScanner.container}>
-      <View style={[styledScanner.scanner, { position: "relative" }]}>
-        <BarcodeScanner onScanned={handleBarcodeScanned} scanned={scanned} />
-        <Animated.View
-          style={[styledScanner.scannerLine, { transform: [{ translateY }] }]}
-        />
-      </View>
+      
 
       <View style={styledScanner.container}>
         {cart.length > 0 && (

@@ -17,12 +17,14 @@ export default function ScannedForm({
         value={code}
         onChangeText={setCode}
         style={styledForm.inputLabel}
+        placeholderTextColor="grey"
       />
       <TextInput
         placeholder="Nombre del producto"
         value={name}
         onChangeText={setName}
         style={styledForm.inputLabel}
+        placeholderTextColor="grey"
       />
       <TextInput
         placeholder="Precio"
@@ -30,6 +32,8 @@ export default function ScannedForm({
         onChangeText={setPrice}
         keyboardType="numeric"
         style={styledForm.inputLabel}
+        placeholderTextColor="grey"
+        
       />
     </View>
   );

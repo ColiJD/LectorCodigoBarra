@@ -11,17 +11,17 @@ export default {
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/splash-icon.png",
+      image: "./assets/icon.png",
       resizeMode: "contain",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#F4F6F8",
     },
     ios: {
       supportsTablet: true,
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
-        backgroundColor: "#ffffff",
+        foregroundImage: "./assets/icon.png",
+        backgroundColor: "#F4F6F8",
       },
       edgeToEdgeEnabled: true,
       permissions: ["android.permission.CAMERA"],
@@ -33,7 +33,7 @@ export default {
     },
 
     web: {
-      favicon: "./assets/favicon.png",
+      favicon: "./assets/icon.png",
     },
     plugins: ["expo-router"],
     extra: {

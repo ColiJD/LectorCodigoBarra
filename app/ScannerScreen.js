@@ -183,7 +183,7 @@ export default function ScannerScreen() {
               <CustomButton
                 title="Volver al inicio"
                 icon="arrow-back"
-                onPress={() => router.back()}
+                onPress={() => router.push("/")}
                 color="#9E9E9E"
               />
             </View>

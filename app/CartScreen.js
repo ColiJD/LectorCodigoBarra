@@ -163,6 +163,7 @@ export default function CartScreen() {
             </Text>
             <TextInput
               placeholder="Precio"
+              placeholderTextColor="grey"
               keyboardType="numeric"
               value={customPrice}
               onChangeText={setCustomPrice}

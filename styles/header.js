@@ -6,7 +6,7 @@ export const StyledHeader = StyleSheet.create({
     backgroundColor: colors.blueDark,
   },
   header: {
-    marginTop: 36,
+    
     padding: 16,
     alignItems: "center",
     flexDirection: "row",
@@ -14,7 +14,7 @@ export const StyledHeader = StyleSheet.create({
     backgroundColor: colors.blueDark,
     borderBottomWidth: 2,
     borderBottomColor: colors.white,
-    height: 60, // <-- altura fija
+    height: 80, // <-- altura fija
     paddingHorizontal: 16,
   },
   titles: {

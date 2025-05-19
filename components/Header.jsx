@@ -5,9 +5,6 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
-  SafeAreaView,
-  Platform,
-  StatusBar,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
@@ -31,6 +28,10 @@ const HeaderWithRightPanel = () => {
         return "Escanear Producto";
       case "/CartScreen":
         return "Realizar Venta";
+      case "/Login":
+        return "Iniciar Sesion";
+      case "/RegistroScreen":
+        return "Crear Usuario";
       default:
         return "Scanner App";
     }
@@ -75,6 +76,14 @@ const HeaderWithRightPanel = () => {
           >
             <MaterialIcons name="point-of-sale" size={24} color="#FFF" />
             <Text style={StyledHeader.linkText}>Realizar Venta</Text>
+          </Pressable>
+          <Pressable style={StyledHeader.link} onPress={() => navigateTo("/Login")}>
+            <MaterialIcons name="person" size={24} color="#FFF" />
+            <Text style={StyledHeader.linkText}>Iniciar Sesion</Text>
+          </Pressable>
+          <Pressable style={StyledHeader.link} onPress={() => navigateTo("/RegistroScreen")}>
+            <MaterialIcons name="person-add" size={24} color="#FFF" />
+            <Text style={StyledHeader.linkText}>Crear Usuario</Text>
           </Pressable>
         </View>
       </Modal>

@@ -1,20 +1,14 @@
-import { Stack } from "expo-router";
+import { Slot  } from "expo-router";
 import { View, StyleSheet, StatusBar, Platform } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Footer from "../components/Footer"; // Importa tu footer aquí
 
 export default function RootLayout() {
   return (
-    <>
- 
-      {/* Contenedor principal */}
+   <>
       <View style={styles.container}>
-        <Stack
-          screenOptions={{
-            header: () => <HeaderWithRightPanel />,
-          }}
-        />
+        <HeaderWithRightPanel />
+        <Slot /> 
       </View>
       <Footer />
       <Toast />

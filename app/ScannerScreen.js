@@ -9,7 +9,7 @@ import {
 import { useRouter } from "expo-router"; // Hook de navegación
 import { styledScanner } from "../styles/styles";
 import Toast from "react-native-toast-message";
-
+import { useCameraPermission } from "../hooks/useCameraPermission";
 import BarcodeScanner from "../components/BarcodeScanner"; // Componente para el escáner de códigos
 import ScannedForm from "../components/ScannedForm"; // Componente para el formulario de escaneo
 import CustomButton from "../components/Button"; // Componente de botón personalizado
@@ -33,6 +33,7 @@ export default function ScannerScreen() {
   const router = useRouter(); // Para volver a la pantalla anterior
 
   const translateY = useScannerAnimation(); // Hook para la animación del escáner
+  const hasPermission = useCameraPermission();
   const keyboardVisible = useKeyboardVisible(); // Hook para detectar si el teclado está visible
   const handleBarcodeScanned = useBarcodeHandler({
     setCode,
@@ -116,6 +117,19 @@ export default function ScannerScreen() {
     setName("");
     setPrice("");
   };
+
+  // Si no se ha autorizado la cámara, muestra un mensaje
+  if (hasPermission !== true) {
+    return (
+      <View style={styledScanner.center}>
+        <Text>
+          {hasPermission === null
+            ? "Solicitando permiso de cámara..."
+            : "Acceso a cámara denegado."}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <Screen>

@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
 
-export  function useCameraPermission() {
+export function useCameraPermission() {
   const [hasPermission, setHasPermission] = useState(null);
 
   useEffect(() => {
-    const getPermissions = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+    const checkPermissions = async () => {
+      const { status: existingStatus } =
+        await Camera.getCameraPermissionsAsync();
+
+      if (existingStatus === "granted") {
+        setHasPermission(true);
+      } else {
+        const { status: newStatus } =
+          await Camera.requestCameraPermissionsAsync();
+        setHasPermission(newStatus === "granted");
+      }
     };
-    getPermissions();
+
+    checkPermissions();
   }, []);
 
   return hasPermission;

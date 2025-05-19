@@ -74,20 +74,23 @@ export default function LoginScreen() {
           placeholder="correo@example.com"
           style={styledForm.inputLabel}
           autoCapitalize="none"
+          placeholderTextColor={colors.placeholder}
         />
 
         <TextInput
           value={password}
           onChangeText={setPassword}
-          placeholder="••••••••"
-          style={styledForm.inputLabel}
+          placeholder="Contraseña"
+          style={[styledForm.inputLabel, { color: "#000" }]} 
           secureTextEntry={!showPassword}
+          placeholderTextColor={colors.placeholder}
+          
         />
         <TouchableOpacity
           onPress={() => setShowPassword((prev) => !prev)}
           style={{ position: "absolute", right: 25, bottom: 25 }}
         >
-          <Text>{showPassword ? "🙈" : "👁️"}</Text>
+          <Text style={{color:"#000"}}>{showPassword ? "🙈" : "👁️"}</Text>
         </TouchableOpacity>
       </View>
       <View style={{ width: "50%" }}>

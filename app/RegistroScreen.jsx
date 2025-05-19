@@ -32,13 +32,14 @@ export default function RegistroScreen() {
           style={styledForm.inputLabel}
           autoCapitalize="none"
           keyboardType="email-address"
+          placeholderTextColor={colors.placeholder}
         />
         <View>
           <TextInput
             value={password}
             onChangeText={setPassword}
             placeholder="Contraseña"
-            style={styledForm.inputLabel}
+            style={[styledForm.inputLabel, { color: "#000" }]}
             placeholderTextColor={colors.placeholder}
             secureTextEntry={!showPassword}
           />
@@ -54,8 +55,9 @@ export default function RegistroScreen() {
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             placeholder="Confirmar Contraseña"
-            style={styledForm.inputLabel}
+            style={[styledForm.inputLabel, { color: "#000" }]}
             secureTextEntry={!showPassword}
+            placeholderTextColor={colors.placeholder}
           />
         </View>
       </View>

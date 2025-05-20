@@ -1,6 +1,8 @@
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useState, useEffect, createContext } from "react";
 import { auth } from "./firebaseConfig";
+import { View,ActivityIndicator } from "react-native";
+
 
 export const Authcontext = createContext({});
 
@@ -16,8 +18,23 @@ export function AuthProvider({ children }) {
     return unsub;
   }, []);
 
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
+  }
+
   return (
-    <Authcontext.Provider value={{ user, loading, setUser }}>
+    <Authcontext.Provider value={{ user, loading: false, setUser }}>
       {children}
     </Authcontext.Provider>
   );

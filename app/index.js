@@ -22,6 +22,12 @@ export default function HomeScreen() {
           color="#28a745"
           onPress={() => router.push("/CartScreen")}
         />
+        <CustomButton
+          title="Login"
+          icon="add"
+          color="#ccc"
+          onPress={() => router.push("/Login")}
+        />
       </View>
       <View style={styledprincipal.containerLogo}>
         <View style={styledprincipal.containerBox}>

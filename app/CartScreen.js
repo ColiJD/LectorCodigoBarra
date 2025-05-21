@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  Button,
   ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";

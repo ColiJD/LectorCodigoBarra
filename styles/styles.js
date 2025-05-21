@@ -93,7 +93,7 @@ export const styledForm = StyleSheet.create({
   container: {
     marginTop: 20,
     alignSelf: "center",
-    width: "90%",
+    width: "100%",
     padding: 10,
     backgroundColor: colors.blueDark,
     gap: 10,

@@ -5,6 +5,7 @@ import { Screen } from "../components/Screen";
 import CustomButton from "../components/Button";
 import { styledprincipal } from "../styles/styles";
 import { MaterialIcons } from "@expo/vector-icons";
+import colors from "../styles/colors";
 export default function HomeScreen() {
   const router = useRouter();
 
@@ -23,12 +24,19 @@ export default function HomeScreen() {
           onPress={() => router.push("/CartScreen")}
         />
         <CustomButton
-          title="Login"
-          icon="add"
-          color="#ccc"
+          title="Iniciar Sesion"
+          icon="person"
+          color={colors.blue}
           onPress={() => router.push("/Login")}
         />
+        <CustomButton
+          title="Crear Usuario"
+          icon="person-add"
+          color={colors.blue}
+          onPress={() => router.push("/RegistroScreen")}
+        />
       </View>
+      
       <View style={styledprincipal.containerLogo}>
         <View style={styledprincipal.containerBox}>
           <MaterialIcons name="qr-code-scanner" size={150} color="white" />

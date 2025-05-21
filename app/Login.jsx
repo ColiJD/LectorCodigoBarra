@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { View, TextInput, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../config/firebaseConfig";
 import { router } from "expo-router";
@@ -19,6 +25,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     // Validaciones básicas
@@ -38,7 +45,12 @@ export default function LoginScreen() {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setIsLoading(true);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const uid = userCredential.user.uid;
 
       // Verificar si el usuario está activo en Firestore
@@ -56,6 +68,8 @@ export default function LoginScreen() {
     } catch (err) {
       console.error("Login error:", err);
       showError("Error al iniciar sesión", "Correo o contraseña incorrectos.");
+    } finally {
+      setIsLoading(false); // 🔸 Detiene el loader
     }
   };
 
@@ -84,7 +98,7 @@ export default function LoginScreen() {
           value={password}
           onChangeText={setPassword}
           placeholder="Contraseña"
-          style={styledForm.inputLabel}
+          style={[styledForm.inputLabel, { color: "#000" }]}
           secureTextEntry={!showPassword}
           autoCapitalize="none"
           placeholderTextColor={colors.placeholder}
@@ -97,27 +111,34 @@ export default function LoginScreen() {
           <Text style={{ color: "#000" }}>{showPassword ? "🙈" : "👁️"}</Text>
         </TouchableOpacity>
       </View>
-
-      <View style={{ width: "50%" }}>
-        <CustomButton
-          title="Iniciar sesión"
-          icon="person"
-          onPress={handleLogin}
-          color={colors.access}
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={colors.white}
+          style={{ marginTop: 20 }}
         />
-        <CustomButton
-          title="Regístrate"
-          icon="person-add"
-          onPress={handleGoToRegister}
-          color={colors.blue}
-        />
-        <CustomButton
-          title="Regresar"
-          icon="arrow-back"
-          onPress={handleBack}
-          color={colors.blue}
-        />
-      </View>
+      ) : (
+        <View style={{ width: "50%" }}>
+          <CustomButton
+            title="Iniciar sesión"
+            icon="person"
+            onPress={handleLogin}
+            color={colors.access}
+          />
+          <CustomButton
+            title="Regístrate"
+            icon="person-add"
+            onPress={handleGoToRegister}
+            color={colors.blue}
+          />
+          <CustomButton
+            title="Regresar"
+            icon="arrow-back"
+            onPress={handleBack}
+            color={colors.blue}
+          />
+        </View>
+      )}
     </Screen>
   );
 }

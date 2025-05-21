@@ -6,7 +6,7 @@ export default {
     name: "lector-codigos",
     slug: "lector-codigos",
     scheme: "lectorcodigos",
-    version: "1.2.3",
+    version: "2.0.1",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",

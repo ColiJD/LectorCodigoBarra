@@ -14,7 +14,7 @@ import BarcodeScanner from "../components/BarcodeScanner"; // Componente para el
 import ScannedForm from "../components/ScannedForm"; // Componente para el formulario de escaneo
 import CustomButton from "../components/Button"; // Componente de botón personalizado
 import { Screen } from "../components/Screen"; // Comp../components/Screen
-
+import ProtectedRoute from "../components/ProtectedRoute";
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
 import {
@@ -132,78 +132,80 @@ export default function ScannerScreen() {
   }
 
   return (
-    <Screen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1, width: "100%" }}
-      >
-        <View style={styledScanner.container}>
-          <View style={styledScanner.scanner}>
-            <BarcodeScanner
-              scanned={scanned}
-              onScanned={handleBarcodeScanned}
-            />
-            <Animated.View
-              style={[
-                styledScanner.scannerLine,
-                { transform: [{ translateY }] },
-              ]}
-            />
-          </View>
-
-          {scanned && (
-            <Text style={styledScanner.center}>Código escaneado</Text>
-          )}
-
-          <ScannedForm
-            code={code}
-            setCode={setCode}
-            name={name}
-            setName={setName}
-            price={price}
-            setPrice={setPrice}
-          />
-
-          {!keyboardVisible && (
-            <View style={styledScanner.buttonGroup}>
-              {(scanned || code.length > 0) && (
-                <>
-                  <CustomButton
-                    title="Guardar producto"
-                    icon="save"
-                    onPress={handleSaveProduct}
-                    color="#4CAF50"
-                  />
-                  <CustomButton
-                    title="Actualizar producto"
-                    icon="edit"
-                    onPress={handleUpdateProduct}
-                    color="#2196F3"
-                  />
-                  <CustomButton
-                    title="Eliminar producto"
-                    icon="delete"
-                    onPress={() => confirmDelete(handleDeleteProduct)}
-                    color="#F44336"
-                  />
-                  <CustomButton
-                    title="Escanear de nuevo"
-                    icon="camera-alt"
-                    onPress={resetForm}
-                    color="#FF9800"
-                  />
-                </>
-              )}
-              <CustomButton
-                title="Volver al inicio"
-                icon="arrow-back"
-                onPress={() => router.push("/")}
-                color="#9E9E9E"
+    <ProtectedRoute>
+      <Screen>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={{ flex: 1, width: "100%" }}
+        >
+          <View style={styledScanner.container}>
+            <View style={styledScanner.scanner}>
+              <BarcodeScanner
+                scanned={scanned}
+                onScanned={handleBarcodeScanned}
+              />
+              <Animated.View
+                style={[
+                  styledScanner.scannerLine,
+                  { transform: [{ translateY }] },
+                ]}
               />
             </View>
-          )}
-        </View>
-      </KeyboardAvoidingView>
-    </Screen>
+
+            {scanned && (
+              <Text style={styledScanner.center}>Código escaneado</Text>
+            )}
+
+            <ScannedForm
+              code={code}
+              setCode={setCode}
+              name={name}
+              setName={setName}
+              price={price}
+              setPrice={setPrice}
+            />
+
+            {!keyboardVisible && (
+              <View style={styledScanner.buttonGroup}>
+                {(scanned || code.length > 0) && (
+                  <>
+                    <CustomButton
+                      title="Guardar producto"
+                      icon="save"
+                      onPress={handleSaveProduct}
+                      color="#4CAF50"
+                    />
+                    <CustomButton
+                      title="Actualizar producto"
+                      icon="edit"
+                      onPress={handleUpdateProduct}
+                      color="#2196F3"
+                    />
+                    <CustomButton
+                      title="Eliminar producto"
+                      icon="delete"
+                      onPress={() => confirmDelete(handleDeleteProduct)}
+                      color="#F44336"
+                    />
+                    <CustomButton
+                      title="Escanear de nuevo"
+                      icon="camera-alt"
+                      onPress={resetForm}
+                      color="#FF9800"
+                    />
+                  </>
+                )}
+                <CustomButton
+                  title="Volver al inicio"
+                  icon="arrow-back"
+                  onPress={() => router.push("/")}
+                  color="#9E9E9E"
+                />
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </Screen>
+    </ProtectedRoute>
   );
 }

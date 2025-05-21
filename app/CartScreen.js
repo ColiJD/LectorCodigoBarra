@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Button,
   ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -19,6 +18,7 @@ import { Screen } from "../components/Screen";
 import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 // Funciones reutilizables para el manejo del carrito
 import {
@@ -82,215 +82,217 @@ export default function CartScreen() {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <Screen style={styledScanner.container}>
-      <View style={[styledScanner.scanner, { position: "relative" }]}>
-        <BarcodeScanner onScanned={handleBarcodeScanned} scanned={scanned} />
-        <Animated.View
-          style={[styledScanner.scannerLine, { transform: [{ translateY }] }]}
-        />
-      </View>
-
-      <View style={styledScanner.container}>
-        {cart.length > 0 && (
-          <>
-            <Text style={styledCart.totalText}>
-              Total: L.{total.toFixed(2)}
-            </Text>
-            {/* Botón para mostrar el modal de confirmación */}
-            <TouchableOpacity
-              disabled={cart.length < 1}
-              onPress={() => setConfirmClearModalVisible(true)}
-              style={{
-                position: "absolute",
-                top: 20,
-                left: 10,
-                backgroundColor: "red",
-                padding: 10,
-                borderRadius: 50,
-              }}
-            >
-              <MaterialIcons name="delete" size={15} color="white" />
-            </TouchableOpacity>
-          </>
-        )}
-        <ScrollView>
-          <CartList
-            cart={cart}
-            increaseQuantity={(code) => increaseQuantity(code, setCart)}
-            decreaseQuantity={(code) => decreaseQuantity(code, setCart)}
+    <ProtectedRoute>
+      <Screen style={styledScanner.container}>
+        <View style={[styledScanner.scanner, { position: "relative" }]}>
+          <BarcodeScanner onScanned={handleBarcodeScanned} scanned={scanned} />
+          <Animated.View
+            style={[styledScanner.scannerLine, { transform: [{ translateY }] }]}
           />
-        </ScrollView>
-      </View>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={{
-          position: "absolute",
-          bottom: 30,
-          right: 30,
-          backgroundColor: "#2196F3",
-          padding: 15,
-          borderRadius: 50,
-          elevation: 5,
-        }}
-      >
-        <MaterialIcons name="add" size={28} color="#fff" />
-      </TouchableOpacity>
+        </View>
 
-      <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
-              width: "80%",
-            }}
-          >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              Ingrese el precio:
-            </Text>
-            <TextInput
-              placeholder="Precio"
-              placeholderTextColor="grey"
-              keyboardType="numeric"
-              value={customPrice}
-              onChangeText={setCustomPrice}
-              style={{
-                borderWidth: 1,
-                borderColor: "#ccc",
-                borderRadius: 5,
-                padding: 10,
-                marginBottom: 15,
-              }}
+        <View style={styledScanner.container}>
+          {cart.length > 0 && (
+            <>
+              <Text style={styledCart.totalText}>
+                Total: L.{total.toFixed(2)}
+              </Text>
+              {/* Botón para mostrar el modal de confirmación */}
+              <TouchableOpacity
+                disabled={cart.length < 1}
+                onPress={() => setConfirmClearModalVisible(true)}
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  left: 10,
+                  backgroundColor: "red",
+                  padding: 10,
+                  borderRadius: 50,
+                }}
+              >
+                <MaterialIcons name="delete" size={15} color="white" />
+              </TouchableOpacity>
+            </>
+          )}
+          <ScrollView>
+            <CartList
+              cart={cart}
+              increaseQuantity={(code) => increaseQuantity(code, setCart)}
+              decreaseQuantity={(code) => decreaseQuantity(code, setCart)}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                style={{
-                  flex: 1,
-                  backgroundColor: "#ccc",
-                  paddingVertical: 10,
-                  marginRight: 10,
-                  borderRadius: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={handleAddManualProduct}
-                style={{
-                  flex: 1,
-                  backgroundColor: "#2196F3",
-                  paddingVertical: 10,
-                  marginLeft: 10,
-                  borderRadius: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}
-                >
-                  Agregar
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </ScrollView>
         </View>
-      </Modal>
-      {/* Modal de confirmación para vaciar el carrito */}
-      <Modal
-        visible={confirmClearModalVisible}
-        animationType="slide"
-        transparent
-        onRequestClose={() => setConfirmClearModalVisible(false)}
-      >
-        <View
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
           style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.5)",
+            position: "absolute",
+            bottom: 30,
+            right: 30,
+            backgroundColor: "#2196F3",
+            padding: 15,
+            borderRadius: 50,
+            elevation: 5,
           }}
+        >
+          <MaterialIcons name="add" size={28} color="#fff" />
+        </TouchableOpacity>
+
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setModalVisible(false)}
         >
           <View
             style={{
-              backgroundColor: "white",
-              padding: 20,
-              borderRadius: 10,
-              width: "80%",
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
             }}
           >
-            <Text style={{ fontSize: 18, marginBottom: 10 }}>
-              ¿Deseas vaciar el carrito?
-            </Text>
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                marginTop: 10,
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
               }}
             >
-              <TouchableOpacity
-                onPress={() => setConfirmClearModalVisible(false)}
+              <Text style={{ fontSize: 18, marginBottom: 10 }}>
+                Ingrese el precio:
+              </Text>
+              <TextInput
+                placeholder="Precio"
+                placeholderTextColor="grey"
+                keyboardType="numeric"
+                value={customPrice}
+                onChangeText={setCustomPrice}
                 style={{
-                  flex: 1,
-                  backgroundColor: "#ccc",
-                  paddingVertical: 10,
-                  marginRight: 10,
+                  borderWidth: 1,
+                  borderColor: "#ccc",
                   borderRadius: 5,
-                  alignItems: "center",
+                  padding: 10,
+                  marginBottom: 15,
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
               >
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  clearCart(setCart);
-                  setConfirmClearModalVisible(false);
-                }}
-                style={{
-                  flex: 1,
-                  backgroundColor: "#f44336",
-                  paddingVertical: 10,
-                  marginLeft: 10,
-                  borderRadius: 5,
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: "#ccc",
+                    paddingVertical: 10,
+                    marginRight: 10,
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
                 >
-                  Vaciar
-                </Text>
-              </TouchableOpacity>
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                    Cancelar
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={handleAddManualProduct}
+                  style={{
+                    flex: 1,
+                    backgroundColor: "#2196F3",
+                    paddingVertical: 10,
+                    marginLeft: 10,
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}
+                  >
+                    Agregar
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </Screen>
+        </Modal>
+        {/* Modal de confirmación para vaciar el carrito */}
+        <Modal
+          visible={confirmClearModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setConfirmClearModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 20,
+                borderRadius: 10,
+                width: "80%",
+              }}
+            >
+              <Text style={{ fontSize: 18, marginBottom: 10 }}>
+                ¿Deseas vaciar el carrito?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setConfirmClearModalVisible(false)}
+                  style={{
+                    flex: 1,
+                    backgroundColor: "#ccc",
+                    paddingVertical: 10,
+                    marginRight: 10,
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+                    Cancelar
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    clearCart(setCart);
+                    setConfirmClearModalVisible(false);
+                  }}
+                  style={{
+                    flex: 1,
+                    backgroundColor: "#f44336",
+                    paddingVertical: 10,
+                    marginLeft: 10,
+                    borderRadius: 5,
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                  >
+                    Vaciar
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </Screen>
+    </ProtectedRoute>
   );
 }

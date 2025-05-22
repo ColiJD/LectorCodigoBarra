@@ -29,7 +29,7 @@ export const StyledHeader = StyleSheet.create({
     position: "absolute",
     top: 0, // cambio para que el panel quede pegado al top
     right: 0,
-    width: 250,
+    width: "60%",
     height: "100%",
     backgroundColor: colors.blueDark,
     paddingTop: 20,

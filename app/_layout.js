@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { View, StyleSheet, StatusBar, Platform } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Footer from "../components/Footer";
 import HeaderWithRightPanel from "../components/Header";
@@ -10,15 +10,15 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <Stack
             screenOptions={{
               header: () => <HeaderWithRightPanel />,
             }}
           />
-        </View>
-        <Footer />
-        <Toast />
+          <Footer />
+          <Toast />
+        </SafeAreaView>
         <StatusBar />
       </AuthProvider>
     </SafeAreaProvider>

@@ -16,14 +16,14 @@ export default function ScannedForm({
         placeholder="Código del producto"
         value={code}
         onChangeText={setCode}
-        style={styledForm.inputLabel}
+        style={[styledForm.inputLabel, { color: "#000" }]}
         placeholderTextColor="grey"
       />
       <TextInput
         placeholder="Nombre del producto"
         value={name}
         onChangeText={setName}
-        style={styledForm.inputLabel}
+        style={[styledForm.inputLabel, { color: "#000" }]}
         placeholderTextColor="grey"
       />
       <TextInput
@@ -31,7 +31,7 @@ export default function ScannedForm({
         value={price}
         onChangeText={setPrice}
         keyboardType="numeric"
-        style={styledForm.inputLabel}
+        style={[styledForm.inputLabel, { color: "#000" }]}
         placeholderTextColor="grey"
         
       />

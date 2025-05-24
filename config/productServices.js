@@ -13,17 +13,18 @@ import {
 import {
   validateFields,
   validatePrice,
-  validateBarcode,
-  validateConnection,
 } from "../utils/validation";
 
-export const saveProduct = async ({ code, name, price }) => {
+const coleccion = "Clientes";
+const subcoleccion  = "Productos"
+
+export const saveProduct = async ({ uid, code, name, price }) => {
   validateFields({ code, name, price });
-  await validateBarcode(code);
+  await validateBarcode(code,uid);
   validatePrice(price);
 
-
-  await addDoc(collection(db, "productos"), {
+  // Guardar en la subcolección 'productos' dentro de 'usuarios/{uid}'
+  await addDoc(collection(db, coleccion, uid, subcoleccion ), {
     codigo: code,
     nombre: name,
     precio: parseFloat(price),
@@ -31,12 +32,11 @@ export const saveProduct = async ({ code, name, price }) => {
   });
 };
 
-export const updateProduct = async ({ code, name, price }) => {
+export const updateProduct = async ({ code, name, price,uid }) => {
   validateFields({ code, name, price });
   validatePrice(price);
 
-
-  const productosRef = collection(db, "productos");
+  const productosRef = collection(db, coleccion, uid, subcoleccion );
   const q = query(productosRef, where("codigo", "==", code));
   const snapshot = await getDocs(q);
 
@@ -49,10 +49,10 @@ export const updateProduct = async ({ code, name, price }) => {
   });
 };
 
-export const deleteProduct = async (code) => {
+export const deleteProduct = async (code,uid) => {
   if (!code) throw new Error("Código requerido.");
 
-  const productosRef = collection(db, "productos");
+  const productosRef = collection(db, coleccion, uid, subcoleccion );
   const q = query(productosRef, where("codigo", "==", code));
   const snapshot = await getDocs(q);
 
@@ -62,8 +62,8 @@ export const deleteProduct = async (code) => {
   await deleteDoc(docRef);
 };
 // Función para obtener un producto por su código de barras
-export const getProductByBarcode = async (code) => {
-  const productosRef = collection(db, "productos");
+export const getProductByBarcode = async (code,uid) => {
+  const productosRef = collection(db, coleccion, uid, subcoleccion );
   const q = query(productosRef, where("codigo", "==", code));
   const snapshot = await getDocs(q);
 
@@ -76,4 +76,20 @@ export const getProductByBarcode = async (code) => {
   }
 
   return null; // Si no se encuentra el producto
+};
+
+// Verifica si un código ya existe en la colección "productos"
+export const isBarcodeRegistered = async (codigo,uid) => {
+  const productosRef = collection(db, coleccion, uid, subcoleccion );
+  const q = query(productosRef, where("codigo", "==", codigo));
+
+  const snapshot = await getDocs(q);
+  return !snapshot.empty;
+};
+
+const validateBarcode = async (code,uid) => {
+  const exists = await isBarcodeRegistered(code,uid);
+  if (exists) {
+    throw new Error("El código de barras ya existe en la base de datos.");
+  }
 };

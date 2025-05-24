@@ -8,6 +8,7 @@ export const useBarcodeHandler = ({
   setName,
   setPrice,
   setScanned,
+  uid,
   onSuccess = () => {}, // Función opcional
   onError = () => {}, // Función opcional
 }) => {
@@ -17,7 +18,7 @@ export const useBarcodeHandler = ({
       setCode(data);
       try {
         await playScanSound(); // Reproducir el sonido al escanear
-        const existingProduct = await getProductByBarcode(data); // Buscar en DB
+        const existingProduct = await getProductByBarcode(data,uid); // Buscar en DB
         if (existingProduct) {
           setName(existingProduct.nombre);
           setPrice(existingProduct.precio.toString());
@@ -32,7 +33,7 @@ export const useBarcodeHandler = ({
         onError("Error al obtener el producto: " + error.message);
       }
     },
-    [setScanned, setCode, setName, setPrice, onSuccess, onError]
+    [setScanned, setCode, setName, setPrice, onSuccess, onError,uid]
   );
 
   return handleBarcodeScanned;

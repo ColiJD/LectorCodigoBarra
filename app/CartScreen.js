@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import uuid from "react-native-uuid"; // Asegúrate de instalar esta librería
-
+import { auth } from "../config/firebaseConfig";
 // Componentes y hooks personalizados
 import BarcodeScanner from "../components/BarcodeScanner";
 import CartList from "../components/CartList";
@@ -19,6 +19,7 @@ import { useScannerAnimation } from "../hooks/useScannerAnimation";
 import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";
 import ProtectedRoute from "../components/ProtectedRoute";
+import { useCart } from "../config/CartContext";
 
 // Funciones reutilizables para el manejo del carrito
 import {
@@ -30,10 +31,11 @@ import {
 import { styledScanner, styledCart } from "../styles/styles";
 
 export default function CartScreen() {
+
   // Evita múltiples escaneos
   const [scanned, setScanned] = useState(false);
   // Lista de productos en el carrito
-  const [cart, setCart] = useState([]);
+  const { cart, setCart } = useCart();
   const [modalVisible, setModalVisible] = useState(false);
   const [customPrice, setCustomPrice] = useState("");
   const translateY = useScannerAnimation();
@@ -41,7 +43,7 @@ export default function CartScreen() {
   // NUEVO estado
   const [confirmClearModalVisible, setConfirmClearModalVisible] =
     useState(false);
-
+  const user = auth.currentUser;
   const handleAddManualProduct = () => {
     const price = parseFloat(customPrice);
     if (isNaN(price) || price <= 0) return;
@@ -58,11 +60,11 @@ export default function CartScreen() {
   };
 
   // Lógica para manejar escaneo de código de barras
-  const handleBarcodeScanned = ({ data }) => {
+  const handleBarcodeScanned = async ({ data }) => {
     playScanSound(); // Reproduce sonido al escanear
     if (!scanned) {
       setScanned(true);
-      addToCart(data, cart, setCart); // Agrega producto al carrito
+      await addToCart(data, cart, setCart, user.uid); // Agrega producto al carrito
       setTimeout(() => setScanned(false), 2000); // Evita escaneos rápidos
     }
   };

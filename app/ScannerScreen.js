@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auth } from "../config/firebaseConfig";
 import {
   View,
   Text,
@@ -31,12 +32,23 @@ export default function ScannerScreen() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const router = useRouter(); // Para volver a la pantalla anterior
+  const user = auth.currentUser;
 
+  const router = useRouter(); // Para volver a la pantalla anterior
   const translateY = useScannerAnimation(); // Hook para la animación del escáner
   const hasPermission = useCameraPermission();
   const keyboardVisible = useKeyboardVisible(); // Hook para detectar si el teclado está visible
+  useEffect(() => {
+    if (user == null) {
+      router.replace("/Login");
+    }
+  }, [user]);
+
+  if (user == null) {
+    return null; // ⏳ o muestra un loading si prefieres
+  }
   const handleBarcodeScanned = useBarcodeHandler({
+    uid: user.uid,
     setCode,
     setName,
     setPrice,
@@ -60,7 +72,7 @@ export default function ScannerScreen() {
   // Función para guardar el producto en la base de datos
   const handleSaveProduct = async () => {
     try {
-      await saveProduct({ code, name, price });
+      await saveProduct({ code, name, price, uid: user.uid });
       Toast.show({
         type: "success",
         text1: "Producto guardado",
@@ -78,7 +90,7 @@ export default function ScannerScreen() {
 
   const handleUpdateProduct = async () => {
     try {
-      await updateProduct({ code, name, price });
+      await updateProduct({ code, name, price, uid: user.uid });
       Toast.show({
         type: "success",
         text1: "Producto actualizado",
@@ -96,7 +108,7 @@ export default function ScannerScreen() {
 
   const handleDeleteProduct = async () => {
     try {
-      await deleteProduct(code);
+      await deleteProduct(code, user.uid);
       Toast.show({
         type: "success",
         text1: "Producto eliminado",

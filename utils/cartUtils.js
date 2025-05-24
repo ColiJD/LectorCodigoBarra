@@ -45,9 +45,9 @@ export const clearCart = (setCart) => {
   });
 };
 
-export const addToCart = async (barcode, cart, setCart) => {
+export const addToCart = async (barcode, cart, setCart,uid) => {
   try {
-    const product = await getProductByBarcode(barcode);
+    const product = await getProductByBarcode(barcode,uid);
     if (!product) {
       Toast.show({
         type: "error",

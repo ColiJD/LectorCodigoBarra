@@ -20,6 +20,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+
 // ✅ Inicializa Firebase Auth con persistencia
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),

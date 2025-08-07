@@ -1,5 +1,6 @@
 // components/Modal.js
 import React from "react";
+import PropTypes from "prop-types";
 import { Modal, View, Text, TextInput, Button } from "react-native";
 
 export const ManualPriceModal = ({
@@ -53,6 +54,14 @@ export const ManualPriceModal = ({
   </Modal>
 );
 
+ManualPriceModal.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  customPrice: PropTypes.string.isRequired,
+  setCustomPrice: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+};
+
 export const ConfirmClearCartModal = ({ visible, onCancel, onConfirm }) => (
   <Modal
     visible={visible}
@@ -81,10 +90,16 @@ export const ConfirmClearCartModal = ({ visible, onCancel, onConfirm }) => (
           ¿Deseas vaciar el carrito?
         </Text>
         <View style={{ flexDirection: "row", gap: 10 }}>
-          <Button title="Cancelar" onPress={onCancel} />
+          <Button title="Cancelaaaaaar" onPress={onCancel} />
           <Button title="Vaciar" color="red" onPress={onConfirm} />
         </View>
       </View>
     </View>
   </Modal>
 );
+
+ConfirmClearCartModal.propTypes = {
+  visible: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};

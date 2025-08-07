@@ -9,9 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import uuid from "react-native-uuid"; // Asegúrate de instalar esta librería
-import { auth } from "../config/firebaseConfig";
-// Componentes y hooks personalizados
+import uuid from "react-native-uuid";
+import { auth, db } from "../config/firebaseConfig";
 import BarcodeScanner from "../components/BarcodeScanner";
 import CartList from "../components/CartList";
 import { Screen } from "../components/Screen";
@@ -20,8 +19,6 @@ import { useCameraPermission } from "../hooks/useCameraPermission";
 import { playScanSound } from "../utils/soundService";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { useCart } from "../config/CartContext";
-
-// Funciones reutilizables para el manejo del carrito
 import {
   increaseQuantity,
   decreaseQuantity,
@@ -29,27 +26,30 @@ import {
   addToCart,
 } from "../utils/cartUtils";
 import { styledScanner, styledCart } from "../styles/styles";
+import * as Print from "expo-print";
+import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { useRouter } from "expo-router";
 
 export default function CartScreen() {
-
-  // Evita múltiples escaneos
   const [scanned, setScanned] = useState(false);
-  // Lista de productos en el carrito
   const { cart, setCart } = useCart();
   const [modalVisible, setModalVisible] = useState(false);
   const [customPrice, setCustomPrice] = useState("");
+  const [salesHistory, setSalesHistory] = useState([]); // <-- historial de ventas
+  const [historyModalVisible, setHistoryModalVisible] = useState(false); // modal para ver historial
+
   const translateY = useScannerAnimation();
   const hasPermission = useCameraPermission();
-  // NUEVO estado
-  const [confirmClearModalVisible, setConfirmClearModalVisible] =
-    useState(false);
+  const [confirmClearModalVisible, setConfirmClearModalVisible] = useState(false);
   const user = auth.currentUser;
+  const router = useRouter();
+  
   const handleAddManualProduct = () => {
     const price = parseFloat(customPrice);
     if (isNaN(price) || price <= 0) return;
 
     const newItem = {
-      code: uuid.v4(), // ID único
+      code: uuid.v4(),
       name: "Producto sin código",
       price,
       quantity: 1,
@@ -59,16 +59,129 @@ export default function CartScreen() {
     setCustomPrice("");
   };
 
-  // Lógica para manejar escaneo de código de barras
   const handleBarcodeScanned = async ({ data }) => {
-    playScanSound(); // Reproduce sonido al escanear
+    playScanSound();
     if (!scanned) {
       setScanned(true);
-      await addToCart(data, cart, setCart, user.uid); // Agrega producto al carrito
-      setTimeout(() => setScanned(false), 2000); // Evita escaneos rápidos
+      await addToCart(data, cart, setCart, user.uid);
+      setTimeout(() => setScanned(false), 2000);
     }
   };
-  // Si no se ha autorizado la cámara, muestra un mensaje
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  // Función para guardar la venta al realizar la compra
+  const handleCompletePurchase = async () => {
+    if (cart.length === 0) {
+      alert("El carrito está vacío.");
+      return;
+    }
+    const fechaActual = new Date();
+    const newSale = {
+      code: uuid.v4(),
+      date: Timestamp.fromDate(fechaActual), // mejor formato para Firestore
+      userId: user?.uid || "anónimo",
+      items: cart.map((item,key) => ({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        code: item.code,
+      })),
+      total,
+    };
+
+    try {
+      // GUARDAR EN FIRESTORE
+      await addDoc(collection(db, "venta"), newSale);
+
+      setSalesHistory((prev) => [newSale, ...prev]);
+      clearCart(setCart);
+      alert("Compra realizada con éxito y guardada.");
+    } catch (error) {
+      console.error("Error al guardar la venta:", error);
+      alert("Ocurrió un error al guardar la venta.");
+    }
+  };
+
+  const handleExportPDF = async () => {
+    if (cart.length === 0) {
+      alert("No hay productos en el carrito.");
+      return;
+    }
+
+    const fechaActual = new Date();
+    const fechaFormateada = fechaActual.toLocaleDateString("es-HN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const horaFormateada = fechaActual.toLocaleTimeString("es-HN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    const htmlContent = `
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1, h2 { text-align: center; margin: 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+            th { background-color: #f2f2f2; }
+            tfoot { font-weight: bold; }
+            .meta { text-align: center; margin-top: 10px; }
+          </style>
+        </head>
+        <body>
+          <h1>Resumen de Venta</h1>
+          <div class="meta">
+            <h2>Fecha: ${fechaFormateada} &nbsp;&nbsp;&nbsp; Hora: ${horaFormateada}</h2>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${cart
+                .map(
+                  (item) => `
+                    <tr>
+                      <td>${item.name}</td>
+                      <td>L.${item.price.toFixed(2)}</td>
+                      <td>${item.quantity}</td>
+                      <td>L.${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                  `
+                )
+                .join("")}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3">Total</td>
+                <td>L.${total.toFixed(2)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </body>
+      </html>
+    `;
+
+    try {
+      await Print.printAsync({ html: htmlContent });
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
   if (hasPermission !== true) {
     return (
       <View style={styledScanner.center}>
@@ -80,8 +193,6 @@ export default function CartScreen() {
       </View>
     );
   }
-  // Calcula el total a pagar
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <ProtectedRoute>
@@ -99,7 +210,6 @@ export default function CartScreen() {
               <Text style={styledCart.totalText}>
                 Total: L.{total.toFixed(2)}
               </Text>
-              {/* Botón para mostrar el modal de confirmación */}
               <TouchableOpacity
                 disabled={cart.length < 1}
                 onPress={() => setConfirmClearModalVisible(true)}
@@ -124,6 +234,24 @@ export default function CartScreen() {
             />
           </ScrollView>
         </View>
+
+        {/* Botón para exportar PDF */}
+        <TouchableOpacity
+          onPress={handleExportPDF}
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right: 30,
+            backgroundColor: "#4CAF50",
+            padding: 15,
+            borderRadius: 50,
+            elevation: 5,
+          }}
+        >
+          <MaterialIcons name="picture-as-pdf" size={28} color="#fff" />
+        </TouchableOpacity>
+
+        {/* Botón para agregar producto manual */}
         <TouchableOpacity
           onPress={() => setModalVisible(true)}
           style={{
@@ -139,6 +267,39 @@ export default function CartScreen() {
           <MaterialIcons name="add" size={28} color="#fff" />
         </TouchableOpacity>
 
+        {/* NUEVO: Botón para realizar venta */}
+        <TouchableOpacity
+          onPress={handleCompletePurchase}
+          style={{
+            position: "absolute",
+            bottom: 30,
+            left: 30,
+            backgroundColor: "#008CBA",
+            padding: 15,
+            borderRadius: 50,
+            elevation: 5, 
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>Realizar venta</Text>
+        </TouchableOpacity>
+
+        {/* NUEVO: Botón para ver historial de ventas */}
+        <TouchableOpacity
+        onPress={() => router.push("/Historial")}
+          style={{
+            position: "absolute",
+            bottom: 100,
+            left: 30,
+            backgroundColor: "#6a1b9a",
+            padding: 15,
+            borderRadius: 50,
+            elevation: 5,
+          }}
+        >
+          <MaterialIcons name="history" size={28} color="#fff" />
+        </TouchableOpacity>
+
+        {/* Modal para agregar producto manual */}
         <Modal
           visible={modalVisible}
           animationType="slide"
@@ -221,7 +382,8 @@ export default function CartScreen() {
             </View>
           </View>
         </Modal>
-        {/* Modal de confirmación para vaciar el carrito */}
+
+        {/* Modal para confirmar vaciar carrito */}
         <Modal
           visible={confirmClearModalVisible}
           animationType="slide"
@@ -285,12 +447,100 @@ export default function CartScreen() {
                   }}
                 >
                   <Text
-                    style={{ fontSize: 16, fontWeight: "bold", color: "white" }}
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
                   >
                     Vaciar
                   </Text>
                 </TouchableOpacity>
               </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal para mostrar historial de ventas */}
+        <Modal
+          visible={historyModalVisible}
+          animationType="slide"
+          transparent
+          onRequestClose={() => setHistoryModalVisible(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              padding: 20,
+              justifyContent: "center",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                borderRadius: 10,
+                padding: 20,
+                flex: 1,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginBottom: 10,
+                  textAlign: "center",
+                }}
+              >
+                Historial de Ventas
+              </Text>
+              {salesHistory.length === 0 ? (
+                <Text style={{ textAlign: "center", marginTop: 20 }}>
+                  No hay ventas realizadas aún.
+                </Text>
+              ) : (
+                <ScrollView>
+                  {salesHistory.map((sale) => (
+                    <View
+                      key={sale.id}
+                      style={{
+                        borderBottomWidth: 1,
+                        borderBottomColor: "#ccc",
+                        marginBottom: 15,
+                        paddingBottom: 10,
+                      }}
+                    >
+                      <Text style={{ fontWeight: "bold" }}>
+                        Fecha: {sale.date}
+                      </Text>
+                      {sale.items.map((item) => (
+                        <Text key={item.code}>
+                          {item.name} - Cantidad: {item.quantity} - Precio: L.
+                          {item.price.toFixed(2)}
+                        </Text>
+                      ))}
+                      <Text style={{ fontWeight: "bold", marginTop: 5 }}>
+                        Total: L.{sale.total.toFixed(2)}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+
+              <TouchableOpacity
+                onPress={() => setHistoryModalVisible(false)}
+                style={{
+                  backgroundColor: "#2196F3",
+                  padding: 12,
+                  borderRadius: 8,
+                  marginTop: 10,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  Cerrar
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>

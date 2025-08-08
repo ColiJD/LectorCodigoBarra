@@ -27,6 +27,8 @@ const HeaderWithRightPanel = () => {
         return "Iniciar Sesion";
       case "/RegistroScreen":
         return "Crear Usuario";
+      case "/Historial":
+        return "Historial de Ventas";
       default:
         return "Scanner App";
     }

@@ -36,8 +36,6 @@ export default function CartScreen() {
   const { cart, setCart } = useCart();
   const [modalVisible, setModalVisible] = useState(false);
   const [customPrice, setCustomPrice] = useState("");
-  const [salesHistory, setSalesHistory] = useState([]); // <-- historial de ventas
-  const [historyModalVisible, setHistoryModalVisible] = useState(false); // modal para ver historial
 
   const translateY = useScannerAnimation();
   const hasPermission = useCameraPermission();
@@ -66,7 +64,7 @@ export default function CartScreen() {
     if (!scanned) {
       setScanned(true);
       await addToCart(data, cart, setCart, user.uid);
-      setTimeout(() => setScanned(false), 2000);
+      setTimeout(() => setScanned(false), 500);
     }
   };
 
@@ -88,6 +86,7 @@ export default function CartScreen() {
     }
     const fechaActual = new Date();
     const newSale = {
+      total,
       code: uuid.v4(),
       date: Timestamp.fromDate(fechaActual), // mejor formato para Firestore
       userId: user.uid,
@@ -97,12 +96,11 @@ export default function CartScreen() {
         quantity: item.quantity,
         code: item.code,
       })),
-      total,
     };
 
     try {
       // GUARDAR EN FIRESTORE
-      await addDoc(collection(db, "venta"), newSale);
+      await addDoc(collection(db, "Clientes", user.uid, "ventas"), newSale);
 
       Alert.alert(
         "Compra exitosa",

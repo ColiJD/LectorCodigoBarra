@@ -35,7 +35,7 @@ export default function Historial() {
 
       // 🔹 Solo traer ventas de este usuario
       const q = query(
-        collection(db, "venta"),
+        collection(db, "Clientes", user.uid, "ventas"),
         where("userId", "==", user.uid)
       );
 
@@ -98,6 +98,7 @@ export default function Historial() {
           .padStart(2, "0")}/${date.getFullYear()}`
       : "";
   };
+  const totalVentas = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
 
   const handleExportPDF = async () => {
     if (filteredSales.length === 0) {
@@ -106,52 +107,59 @@ export default function Historial() {
     }
 
     const htmlContent = `
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { text-align: center; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-            th { background-color: #f2f2f2; }
-          </style>
-        </head>
-        <body>
-          <h1>Historial de Ventas</h1>
-          ${filterDate ? `<p>Fecha filtrada: ${formatDate(filterDate)}</p>` : ""}
-          <table>
-            <thead>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        tfoot td { font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <h1>Historial de Ventas</h1>
+      ${filterDate ? `<p>Fecha filtrada: ${formatDate(filterDate)}</p>` : ""}
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Productos</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${filteredSales
+            .map(
+              (sale) => `
               <tr>
-                <th>Fecha</th>
-                <th>Productos</th>
-                <th>Total</th>
+                <td>${sale.date?.toDate().toLocaleString("es-HN")}</td>
+                <td>
+                  ${sale.items
+                    .map(
+                      (p) =>
+                        `${p.name} x${p.quantity} (L.${p.price.toFixed(2)})`
+                    )
+                    .join("<br>")}
+                </td>
+                <td>L.${sale.total.toFixed(2)}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${filteredSales
-                .map(
-                  (sale) => `
-                  <tr>
-                    <td>${sale.date?.toDate().toLocaleString("es-HN")}</td>
-                    <td>
-                      ${sale.items
-                        .map(
-                          (p) =>
-                            `${p.name} x${p.quantity} (L.${p.price.toFixed(2)})`
-                        )
-                        .join("<br>")}
-                    </td>
-                    <td>L.${sale.total.toFixed(2)}</td>
-                  </tr>
-                `
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </body>
-      </html>
-    `;
+            `
+            )
+            .join("")}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">Total General</td>
+            <td>L.${totalVentas.toFixed(2)}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </body>
+  </html>
+`;
 
     try {
       await Print.printAsync({ html: htmlContent });
@@ -218,10 +226,15 @@ export default function Historial() {
           marginBottom: 10,
         }}
       >
-        <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>
+        <Text
+          style={{ color: "white", textAlign: "center", fontWeight: "bold" }}
+        >
           Imprimir / Exportar PDF
         </Text>
       </TouchableOpacity>
+      <Text style={{ textAlign: "center", marginBottom: 10, color: "#555" }}>
+        Total Ventas: L.{totalVentas.toFixed(2)}
+      </Text>
 
       {filteredSales.length === 0 ? (
         <View style={styles.center}>

@@ -65,6 +65,7 @@ export const handleRegister = async ({
 
     await setDoc(doc(db, "users", uid), {
       email,
+      password,
       activo: false,
       creado: new Date(),
     });

@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore"; // 🔹 Importar query y where
 import { db } from "../config/firebaseConfig";
+import { getAuth } from "firebase/auth"; // 🔹 Para obtener el usuario logueado
 import DateTimePicker from "@react-native-community/datetimepicker";
-import * as Print from "expo-print"; // 👈 Importar para imprimir/exportar
+import * as Print from "expo-print";
 
 export default function Historial() {
   const [sales, setSales] = useState([]);
@@ -23,7 +24,22 @@ export default function Historial() {
 
   const fetchSales = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "venta"));
+      const auth = getAuth();
+      const user = auth.currentUser; // 🔹 Usuario logueado
+
+      if (!user) {
+        console.warn("No hay usuario autenticado");
+        setLoading(false);
+        return;
+      }
+
+      // 🔹 Solo traer ventas de este usuario
+      const q = query(
+        collection(db, "venta"),
+        where("userId", "==", user.uid)
+      );
+
+      const querySnapshot = await getDocs(q);
       const salesData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -83,7 +99,6 @@ export default function Historial() {
       : "";
   };
 
-  // 📄 Función para imprimir/exportar historial filtrado
   const handleExportPDF = async () => {
     if (filteredSales.length === 0) {
       alert("No hay ventas para exportar.");
@@ -158,7 +173,6 @@ export default function Historial() {
     <SafeAreaView style={styles.safeArea}>
       <View style={{ height: 20 }} />
 
-      {/* Filtros */}
       <View style={styles.filterContainer}>
         <Text style={styles.filterLabel}>Filtrar por fecha:</Text>
         <TouchableOpacity
@@ -194,7 +208,6 @@ export default function Historial() {
         />
       )}
 
-      {/* Botón imprimir */}
       <TouchableOpacity
         onPress={handleExportPDF}
         style={{

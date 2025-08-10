@@ -213,6 +213,12 @@ export default function ScannerScreen() {
                   onPress={() => router.push("/")}
                   color="#9E9E9E"
                 />
+                <CustomButton
+                  title="Realizar Venta"
+                  icon="shopping-cart"
+                  onPress={() => router.push("/CartScreen")}
+                  color="#28a745"
+                />
               </View>
             )}
           </View>

@@ -15,7 +15,7 @@ export default function Footer() {
   return (
     <View style={styledFooter.footer}>
       <Text style={styledFooter.text}>
-        © 2025 ColiJD. Todos los derechos reservados.
+        © 2025 DEV3C Todos los derechos reservados.
       </Text>
       {/* <View style={styledFooter.buttons}>
         <CustomButton

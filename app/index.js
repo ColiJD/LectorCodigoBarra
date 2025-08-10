@@ -35,6 +35,12 @@ export default function HomeScreen() {
           color={colors.blue}
           onPress={() => router.push("/RegistroScreen")}
         />
+        <CustomButton
+          title="Historial"
+          icon="history"
+          color={colors.Purple}
+          onPress={() => router.push("/Historial")}
+        />
       </View>
       
       <View style={styledprincipal.containerLogo}>
